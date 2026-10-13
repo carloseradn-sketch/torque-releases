@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Torque es el companion inteligente para el BMS de tu batería: telemetría en vivo, análisis por celda, salud y protección, viajes con GPS y seguridad térmica.">
+<meta name="theme-color" content="#0b1220">
+<title>Torque · El companion inteligente para el BMS de tu batería</title>
+<link rel="icon" href="icon.png">
+<style>
+  :root {
+    --accent: #007AFF;
+    --accent-2: #0055CC;
+    --bg: #0b1220;
+    --bg-2: #101a2e;
+    --card: rgba(255,255,255,.06);
+    --card-border: rgba(255,255,255,.12);
+    --fg: #f5f5f7;
+    --fg2: #9aa4b2;
+    --ok: #30d158;
+    --radius: 22px;
+    --maxw: 1080px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--fg);
+    background:
+      radial-gradient(1200px 760px at 12% -12%, rgba(0,122,255,.34), transparent 60%),
+      radial-gradient(1000px 640px at 112% 4%, rgba(0,85,204,.26), transparent 56%),
+      linear-gradient(180deg, var(--bg), var(--bg-2));
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  .wrap { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 20px 80px; }
+
+  header.bar {
+    position: sticky; top: 0; z-index: 20;
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    background: linear-gradient(180deg, rgba(11,18,32,.85), rgba(11,18,32,.35));
+    border-bottom: 1px solid rgba(255,255,255,.06);
+  }
+  .bar .inner {
+    max-width: var(--maxw); margin: 0 auto; padding: 12px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .bar .mini-logo {
+    width: 34px; height: 34px; border-radius: 10px; flex: none;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: 0 8px 22px rgba(0,122,255,.4);
+    display: grid; place-items: center; font-size: 18px;
+  }
+  .bar .name { font-weight: 800; letter-spacing: -.3px; font-size: 17px; }
+  .bar .spacer { flex: 1; }
+  a.cta {
+    padding: 9px 18px; font-size: 14px; font-weight: 600; border-radius: 100px;
+    text-decoration: none; color: #fff;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: 0 10px 24px rgba(0,122,255,.35);
+  }
+  a.cta.disabled { background: rgba(255,255,255,.12); color: var(--fg2); box-shadow: none; pointer-events: none; }
+
+  .hero { text-align: center; padding: 64px 0 30px; }
+  .logo {
+    position: relative; width: 120px; height: 120px; margin: 0 auto 26px; border-radius: 34px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: 0 22px 54px rgba(0,122,255,.45), 0 12px 34px rgba(0,85,204,.35);
+    overflow: hidden;
+  }
+  .logo .emoji { position: absolute; inset: 0; display: grid; place-items: center; font-size: 60px; }
+  .logo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .eyebrow {
+    display: inline-block; margin-bottom: 16px; padding: 6px 14px; border-radius: 100px;
+    background: rgba(0,122,255,.15); color: #6fb2ff; font-size: 12.5px; font-weight: 700;
+    letter-spacing: .4px; text-transform: uppercase;
+  }
+  h1 { font-size: clamp(30px, 5.2vw, 46px); margin: 0 auto; max-width: 760px; letter-spacing: -1px; line-height: 1.08; font-weight: 800; }
+  .lead { color: var(--fg2); font-size: clamp(16px, 2.2vw, 19px); line-height: 1.6; margin: 18px auto 0; max-width: 680px; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; align-items: center; margin-top: 30px; }
+  .download {
+    display: inline-flex; align-items: center; gap: 10px; padding: 15px 30px; font-size: 17px; font-weight: 600;
+    color: #fff; text-decoration: none; border-radius: 100px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: 0 14px 34px rgba(0,122,255,.42); transition: transform .1s ease, opacity .15s;
+  }
+  .download:hover { opacity: .94; }
+  .download:active { transform: scale(.99); }
+  .download.disabled { background: rgba(255,255,255,.12); color: var(--fg2); box-shadow: none; pointer-events: none; }
+  .dl-meta { color: var(--fg2); font-size: 13px; }
+  .dl-meta strong { color: var(--fg); }
+  .hero-shots { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 34px; }
+  .chip {
+    padding: 7px 14px; border-radius: 100px; font-size: 13px; color: var(--fg2);
+    background: var(--card); border: 1px solid var(--card-border);
+  }
+
+  section { margin-top: 72px; }
+  .section-head { text-align: center; margin-bottom: 34px; }
+  .section-head h2 { font-size: clamp(23px, 3.4vw, 30px); margin: 0; letter-spacing: -.6px; font-weight: 800; }
+  .section-head p { color: var(--fg2); font-size: 16px; line-height: 1.6; margin: 12px auto 0; max-width: 640px; }
+
+  .card {
+    background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius);
+    padding: 26px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 20px 60px rgba(0,0,0,.30);
+  }
+
+  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+  .feature { height: 100%; }
+  .feature .ic {
+    width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; font-size: 23px;
+    background: rgba(0,122,255,.14); border: 1px solid rgba(0,122,255,.22); margin-bottom: 14px;
+  }
+  .feature h3 { margin: 0 0 8px; font-size: 17px; letter-spacing: -.2px; font-weight: 700; }
+  .feature p { margin: 0; color: var(--fg2); font-size: 14.5px; line-height: 1.6; }
+
+  .pillars { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .pillar h3 { margin: 0 0 8px; font-size: 18px; letter-spacing: -.2px; }
+  .pillar p { margin: 0; color: var(--fg2); font-size: 15px; line-height: 1.65; }
+  .pillar .dot { width: 10px; height: 10px; border-radius: 100px; background: var(--accent); display: inline-block; margin-right: 9px; box-shadow: 0 0 16px rgba(0,122,255,.8); }
+
+  .specs { display: grid; gap: 0; }
+  .spec { display: flex; gap: 16px; padding: 15px 4px; border-top: 1px solid rgba(255,255,255,.08); }
+  .spec:first-child { border-top: 0; }
+  .spec .k { width: 168px; flex: none; color: var(--fg2); font-size: 14px; }
+  .spec .v { font-size: 14.5px; }
+
+  #descargar .card { text-align: center; }
+  .version-pill {
+    display: inline-block; margin-bottom: 6px; padding: 7px 16px; border-radius: 100px;
+    background: rgba(0,122,255,.15); color: #6fb2ff; font-size: 13.5px; font-weight: 700;
+  }
+  .cl-title {
+    margin: 26px 0 12px; font-size: 12px; letter-spacing: .5px; text-transform: uppercase;
+    color: var(--fg2); font-weight: 700; text-align: left;
+  }
+  .changelog { font-size: 15px; line-height: 1.7; color: var(--fg); margin: 0; text-align: left; white-space: pre-wrap; }
+  .empty { color: var(--fg2); font-size: 15px; text-align: left; margin: 0; }
+  .fine { color: var(--fg2); font-size: 12.5px; margin-top: 16px; }
+  .fine a { color: var(--accent); text-decoration: none; }
+  .fine a:hover { text-decoration: underline; }
+
+  footer { margin-top: 80px; text-align: center; color: var(--fg2); font-size: 13px; line-height: 1.7; }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 560px) {
+    .hero { padding-top: 44px; }
+    .spec .k { width: 118px; }
+    .bar .name { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="inner">
+    <div class="mini-logo">&#9889;</div>
+    <div class="name">Torque</div>
+    <div class="spacer"></div>
+    <a class="cta disabled" id="topCta" href="#" data-release-link>Descargar</a>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="hero" style="margin-top:0">
+    <div class="logo">
+      <span class="emoji">&#9889;</span>
+      <img src="icon.png" alt="Torque" onerror="this.remove()">
+    </div>
+    <div class="eyebrow">Companion de BMS</div>
+    <h1>Conoce tu batería como nunca antes.</h1>
+    <p class="lead">
+      Torque convierte una batería con BMS genérico en un paquete totalmente instrumentado:
+      telemetría en vivo, análisis por celda, diagnóstico de salud y protección, registro de
+      viajes con GPS y seguridad térmica, todo en una interfaz limpia y nativa.
+    </p>
+
+    <div class="hero-actions">
+      <a class="download disabled" id="heroDownload" href="#" data-release-link>
+        <span>&#11015;</span><span data-dl-label>Descargar APK</span>
+      </a>
+      <div class="dl-meta" id="heroMeta"></div>
+    </div>
+
+    <div class="hero-shots">
+      <span class="chip">Telemetría en vivo</span>
+      <span class="chip">Balanceo por celda</span>
+      <span class="chip">Viajes GPS</span>
+      <span class="chip">Alertas térmicas</span>
+      <span class="chip">Widget Android</span>
+    </div>
+  </section>
+
+  <section id="que-es">
+    <div class="card">
+      <div class="section-head" style="margin-bottom:14px">
+        <h2 style="font-size:22px">¿Qué es Torque?</h2>
+      </div>
+      <p style="margin:0;color:var(--fg);font-size:16px;line-height:1.75">
+        La mayoría de los BMS chinos solo entregan sus datos por un protocolo binario poco
+        documentado sobre Bluetooth LE, y las apps del fabricante son limitadas y dependen de
+        la plataforma. Torque habla ese protocolo directamente, lo decodifica y lo presenta de
+        forma clara, moderna y multiplataforma.
+        <br><br>
+        Está pensada para dueños de motos eléctricas, e-bikes, scooters, respaldo solar y
+        paquetes DIY que quieren información real de su batería —estado de carga, balanceo de
+        celdas, temperatura, ciclos y eventos de protección— y alertas de seguridad proactivas.
+      </p>
+    </div>
+  </section>
+
+  <section id="caracteristicas">
+    <div class="section-head">
+      <h2>Todo lo que hace por tu batería</h2>
+      <p>Del dato crudo a una decisión informada: cada función está pensada para que cuides mejor tu paquete de litio.</p>
+    </div>
+    <div class="grid" id="features"></div>
+  </section>
+
+  <section id="como-ayuda">
+    <div class="section-head">
+      <h2>Cómo te ayuda</h2>
+      <p>Un BMS es la última línea de defensa de una batería de litio. Torque se construye alrededor de esa idea.</p>
+    </div>
+    <div class="pillars" id="pillars"></div>
+  </section>
+
+  <section id="compatibilidad">
+    <div class="section-head">
+      <h2>Compatibilidad</h2>
+      <p>Funciona con el BMS que ya tienes, y crece con un puente opcional si quieres más.</p>
+    </div>
+    <div class="card">
+      <div class="specs">
+        <div class="spec"><div class="k">BMS compatible</div><div class="v">JBD / Jiabaida (Xiaoxiang) por Bluetooth LE</div></div>
+        <div class="spec"><div class="k">Puente opcional</div><div class="v">ESP32 (firmware incluido)</div></div>
+        <div class="spec"><div class="k">Químicas</div><div class="v">LiFePO&#8324; · Li-ion · LTO · LiPo</div></div>
+        <div class="spec"><div class="k">Plataforma</div><div class="v">Android con Bluetooth LE</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="descargar">
+    <div class="section-head">
+      <h2>Descarga la última versión</h2>
+      <p>Instala el APK y empieza a monitorear tu batería en minutos.</p>
+    </div>
+    <div class="card">
+      <div class="version-pill" id="versionPill" hidden></div>
+
+      <a class="download disabled" id="mainDownload" href="#" data-release-link>
+        <span>&#11015;</span><span data-dl-label>Descargar APK</span>
+      </a>
+
+      <div class="cl-title">Novedades de esta versión</div>
+      <p class="changelog" id="changelog">Cargando…</p>
+
+      <div class="fine" id="fine"></div>
+    </div>
+  </section>
+
+  <footer>
+    Torque · Companion para BMS Jiabaida (JBD) y compatibles.<br>
+    Basada en OpenBattery de Shishir Dey, mantenida por Carl.
+  </footer>
+</div>
+
+<script>
+(function () {
+  var MANIFEST = 'version.json';
+
+  var FEATURES = [
+    ['&#9889;', 'Telemetría en vivo', 'Estado de carga, voltaje del paquete, corriente, potencia y capacidad restante, actualizándose en tiempo real.'],
+    ['&#128267;', 'Análisis por celda', 'Voltajes individuales con máximo, mínimo y delta, y una vista dedicada al balanceo de cada celda.'],
+    ['&#128737;', 'Salud y protección', 'Eventos y fallos decodificados en lenguaje claro: sobre/subtensión, sobrecorriente, temperatura y fallos del MOS.'],
+    ['&#127949;', 'Panel de conducción', 'Velocidad, corriente, potencia y consumo en vivo, diseñado para leerse de un vistazo sobre la marcha.'],
+    ['&#128506;', 'Viajes con GPS', 'Grabación de recorridos con historial en mapa y eficiencia energética (Wh/km) por trayecto.'],
+    ['&#127777;', 'Seguridad térmica', 'Avisos tempranos y alertas críticas a pantalla completa con sonido, incluso con la app cerrada.'],
+    ['&#129514;', 'Químicas soportadas', 'LiFePO\u2084, Li-ion, LTO y LiPo, con umbrales de voltaje, balanceo y temperatura adaptados a cada una.'],
+    ['&#128225;', 'Puente ESP32 (opcional)', 'Mantiene el enlace BLE ocupado y controla el MOS de descarga de forma autenticada.'],
+    ['&#128241;', 'Widget de inicio', 'Un resumen en vivo de tu batería directamente en la pantalla de inicio de Android.']
+  ];
+
+  var PILLARS = [
+    ['Seguridad primero', 'Umbrales por química, avisos tempranos y un camino nativo de monitoreo que sigue activo aunque cierres la app.'],
+    ['Control y propiedad', 'Con el puente ESP32 el enlace BLE queda ocupado: nadie con la app del fabricante puede conectarse y desactivar tu vehículo.'],
+    ['Claridad total', 'Los flags crudos de protección y fallo se traducen a lenguaje entendible, para que sepas qué pasó y qué hacer.']
+  ];
+
+  function el(tag, cls, html) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html != null) e.innerHTML = html;
+    return e;
+  }
+
+  var feats = document.getElementById('features');
+  FEATURES.forEach(function (f) {
+    var c = el('div', 'card feature');
+    c.appendChild(el('div', 'ic', f[0]));
+    c.appendChild(el('h3', null, f[1]));
+    c.appendChild(el('p', null, f[2]));
+    feats.appendChild(c);
+  });
+
+  var pillars = document.getElementById('pillars');
+  PILLARS.forEach(function (p) {
+    var c = el('div', 'card pillar');
+    c.appendChild(el('h3', null, '<span class="dot"></span>' + p[0]));
+    c.appendChild(el('p', null, p[1]));
+    pillars.appendChild(c);
+  });
+
+  function fmtDate(value) {
+    if (!value) return '';
+    var d = new Date(value);
+    if (isNaN(d.getTime())) return value;
+    return d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  }
+
+  function setDownloads(url, version) {
+    var links = document.querySelectorAll('[data-release-link]');
+    var labels = document.querySelectorAll('[data-dl-label]');
+    var enabled = !!url;
+    links.forEach(function (a) {
+      a.href = enabled ? url : '#';
+      a.classList.toggle('disabled', !enabled);
+    });
+    labels.forEach(function (l) {
+      l.textContent = enabled ? 'Descargar APK' : 'Descarga no disponible';
+    });
+  }
+
+  function render(data) {
+    var version = (data.version || '').toString().trim();
+    var build = data.build || 0;
+    var url = (data.downloadUrl || '').toString().trim();
+    var changelog = (data.changelog || '').toString().trim();
+    var published = fmtDate(data.publishedAt);
+
+    var label = version ? version + (build > 0 ? ' (' + build + ')' : '') : '';
+    var meta = document.getElementById('heroMeta');
+    if (label) meta.innerHTML = 'Versión <strong>' + label + '</strong>';
+    if (published) meta.innerHTML += (label ? '<br>' : '') + 'Publicado el ' + published;
+
+    var pill = document.getElementById('versionPill');
+    if (label) { pill.textContent = 'Versión ' + label; pill.hidden = false; }
+
+    var cl = document.getElementById('changelog');
+    cl.textContent = changelog || 'No hay notas para esta versión.';
+
+    var fine = document.getElementById('fine');
+    fine.innerHTML = '';
+    if (published) fine.innerHTML += 'Publicado el ' + published + ' &nbsp;·&nbsp; ';
+    fine.innerHTML += '<a href="' + MANIFEST + '">version.json</a>';
+
+    setDownloads(url, version);
+  }
+
+  fetch(MANIFEST + '?t=' + Date.now(), { cache: 'no-store' })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (d) {
+      var data = (d && d.android && typeof d.android === 'object') ? d.android : d;
+      render(data || {});
+    })
+    .catch(function () {
+      document.getElementById('changelog').textContent =
+        'No se pudo cargar la información de la versión.';
+      setDownloads('', '');
+    });
+})();
+</script>
+</body>
+</html>
