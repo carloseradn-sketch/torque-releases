@@ -6,5 +6,5 @@
   "mandatory": false,
   "downloadUrl": "https://github.com/carloseradn-sketch/torque-releases/releases/download/v1.1.5/torque-1.1.5.apk",
   "publishedAt": "2026-10-13",
-  "changelog": "Release v1.1.5: asistente de bienvenida, avisos de actualizacion, idioma chino y mejoras de conexion BLE\n"
+  "changelog": "• Nuevo asistente de bienvenida que te explica la app y te guía para conceder los permisos la primera vez.\n• Aviso automático cuando hay una versión nueva de Torque disponible.\n• Puedes buscar actualizaciones manualmente desde Ajustes.\n• Añadido el idioma chino (中文).\n• Mejoras de estabilidad en la conexión Bluetooth y en la detección de permisos.\n"
 }
