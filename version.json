@@ -1,10 +1,10 @@
 {
   "platform": "android",
-  "version": "1.1.4",
-  "build": 4,
+  "version": "1.1.5",
+  "build": 5,
   "minBuild": 0,
   "mandatory": false,
-  "downloadUrl": "https://github.com/carloseradn-sketch/torque-releases/releases/download/v1.1.4/torque-1.1.4.apk",
+  "downloadUrl": "https://github.com/carloseradn-sketch/torque-releases/releases/download/v1.1.5/torque-1.1.5.apk",
   "publishedAt": "2026-10-13",
-  "changelog": "• Quote heredoc so signing password is written literally in CI\n• Force plugin compileSdk in Gradle so CI release build matches local\n"
+  "changelog": "Release v1.1.5: asistente de bienvenida, avisos de actualizacion, idioma chino y mejoras de conexion BLE\n"
 }
