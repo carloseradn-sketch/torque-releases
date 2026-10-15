@@ -1,10 +1,10 @@
 {
   "platform": "android",
-  "version": "1.1.5",
-  "build": 5,
+  "version": "1.1.6",
+  "build": 6,
   "minBuild": 0,
   "mandatory": false,
-  "downloadUrl": "https://github.com/carloseradn-sketch/torque-releases/releases/download/v1.1.5/torque-1.1.5.apk",
-  "publishedAt": "2026-10-13",
-  "changelog": "• Nuevo asistente de bienvenida que te explica la app y te guía para conceder los permisos la primera vez.\n• Aviso automático cuando hay una versión nueva de Torque disponible.\n• Puedes buscar actualizaciones manualmente desde Ajustes.\n• Añadido el idioma chino (中文).\n• Mejoras de estabilidad en la conexión Bluetooth y en la detección de permisos.\n"
+  "downloadUrl": "https://github.com/carloseradn-sketch/torque-releases/releases/download/v1.1.6/torque-1.1.6.apk",
+  "publishedAt": "2026-10-15",
+  "changelog": "• Release v1.1.6: APK solo para arm64-v8a\n"
 }
