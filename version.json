@@ -1,10 +1,10 @@
 {
   "platform": "android",
-  "version": "1.1.7",
-  "build": 7,
+  "version": "1.1.8",
+  "build": 8,
   "minBuild": 0,
   "mandatory": false,
-  "downloadUrl": "https://github.com/carloseradn-sketch/torque-releases/releases/download/v1.1.7/torque-1.1.7.apk",
+  "downloadUrl": "https://github.com/carloseradn-sketch/torque-releases/releases/download/v1.1.8/torque-1.1.8.apk",
   "publishedAt": "2026-11-14",
-  "changelog": "• Soporte para BMS JK (JK02 24S/32S): celdas, temperaturas, protecciones y control MOS.\n• Control MOS de carga/descarga con verificación del estado real.\n• Selector manual de familia BMS (JBD/JK) en Ajustes.\n• Versión de software del BMS visible en Ajustes.\n• Conexión BLE más robusta: característica correcta y cola de escritura.\n• El puente Wi-Fi queda limitado a JBD.\n"
+  "changelog": "• Selector de baterías: guarda las baterías ya conectadas y permite cambiar entre ellas desde el dashboard sin volver a escanear.\n• Historial de viajes y métricas de eficiencia separados por batería (base de datos v7 con migración automática).\n• Snapshots, tarjeta de autonomía y estado de los MOS aislados por batería.\n• Nuevas conexiones BLE más robustas: se cierra el enlace anterior antes de abrir el nuevo y se reconcilia el driver al cambiar de familia.\n• Arreglo: la app ya no se abre dos veces ni aparece duplicada en recientes (singleTask, sin taskAffinity vacía).\n"
 }
