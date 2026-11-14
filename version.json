@@ -1,10 +1,10 @@
 {
   "platform": "android",
-  "version": "1.1.8",
-  "build": 8,
+  "version": "1.1.9",
+  "build": 9,
   "minBuild": 0,
   "mandatory": false,
-  "downloadUrl": "https://github.com/carloseradn-sketch/torque-releases/releases/download/v1.1.8/torque-1.1.8.apk",
+  "downloadUrl": "https://github.com/carloseradn-sketch/torque-releases/releases/download/v1.1.9/torque-1.1.9.apk",
   "publishedAt": "2026-11-14",
-  "changelog": "• Selector de baterías: guarda las baterías ya conectadas y permite cambiar entre ellas desde el dashboard sin volver a escanear.\n• Historial de viajes y métricas de eficiencia separados por batería (base de datos v7 con migración automática).\n• Snapshots, tarjeta de autonomía y estado de los MOS aislados por batería.\n• Nuevas conexiones BLE más robustas: se cierra el enlace anterior antes de abrir el nuevo y se reconcilia el driver al cambiar de familia.\n• Arreglo: la app ya no se abre dos veces ni aparece duplicada en recientes (singleTask, sin taskAffinity vacía).\n"
+  "changelog": "• Ajustes: se eliminan los selectores manuales de familia BMS y de version JK. La familia se detecta al escanear y la version JK se elige sola al conectar.\n• JK02 24S/32S se detecta desde la version de firmware/hardware del propio pack y se recuerda por bateria, evitando offsets incorrectos al cambiar entre packs JK.\n• Ya no hace falta cortar la conexion para corregir la familia o el protocolo desde Ajustes; el enlace se ajusta una sola vez si la variante detectada difiere.\n"
 }
