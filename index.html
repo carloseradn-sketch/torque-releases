@@ -143,6 +143,22 @@
   .fine a { color: var(--accent); text-decoration: none; }
   .fine a:hover { text-decoration: underline; }
 
+  .dl-stats {
+    display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 18px;
+  }
+  .dl-stats[hidden] { display: none; }
+  .stat {
+    min-width: 150px; padding: 10px 16px; border-radius: 14px;
+    background: rgba(255,255,255,.05); border: 1px solid var(--card-border);
+  }
+  .stat .n {
+    display: block; font-size: 21px; font-weight: 800; letter-spacing: -.5px;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat .l { display: block; margin-top: 2px; font-size: 12px; color: var(--fg2); }
+  .hero-downloads { margin-top: 12px; font-size: 13px; color: var(--fg2); }
+  .hero-downloads strong { color: var(--fg); font-variant-numeric: tabular-nums; }
+
   footer { margin-top: 80px; text-align: center; color: var(--fg2); font-size: 13px; line-height: 1.7; }
   footer a { color: var(--accent); text-decoration: none; }
   footer a:hover { text-decoration: underline; }
@@ -186,6 +202,7 @@
       </a>
       <div class="dl-meta" id="heroMeta"></div>
     </div>
+    <div class="hero-downloads" id="heroDownloads" hidden></div>
 
     <div class="hero-shots">
       <span class="chip">Telemetría en vivo</span>
@@ -257,6 +274,17 @@
         <span>&#11015;</span><span data-dl-label>Descargar APK</span>
       </a>
 
+      <div class="dl-stats" id="downloadStats" hidden>
+        <div class="stat">
+          <span class="n" id="currentDownloads">&mdash;</span>
+          <span class="l">descargas de esta versión</span>
+        </div>
+        <div class="stat">
+          <span class="n" id="totalDownloads">&mdash;</span>
+          <span class="l">descargas totales</span>
+        </div>
+      </div>
+
       <div class="cl-title">Novedades de esta versión</div>
       <p class="changelog" id="changelog">Cargando…</p>
 
@@ -273,6 +301,12 @@
 <script>
 (function () {
   var MANIFEST = 'version.json';
+
+  // Repositorio público donde el workflow adjunta los APK (GitHub Releases).
+  // Los contadores se leen de su API; cámbialo si mueves las releases.
+  var RELEASES_REPO = 'carloseradn-sketch/torque-releases';
+  var STATS_CACHE_KEY = 'torqueDownloadStats';
+  var STATS_CACHE_TTL = 10 * 60 * 1000;
 
   var FEATURES = [
     ['&#9889;', 'Telemetría en vivo', 'Estado de carga, voltaje del paquete, corriente, potencia y capacidad restante, actualizándose en tiempo real.'],
@@ -323,6 +357,112 @@
     return d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
   }
 
+  function fmtCount(value) {
+    return Number(value || 0).toLocaleString('es-ES');
+  }
+
+  function readStatsCache(version, allowStale) {
+    try {
+      var raw = localStorage.getItem(STATS_CACHE_KEY);
+      if (!raw) return null;
+      var cache = JSON.parse(raw);
+      if (!cache || cache.repo !== RELEASES_REPO || cache.version !== version) return null;
+      if (typeof cache.at !== 'number') return null;
+      if (!allowStale && Date.now() - cache.at > STATS_CACHE_TTL) return null;
+      if (typeof cache.current !== 'number' || typeof cache.total !== 'number') return null;
+      return cache;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function writeStatsCache(version, stats) {
+    try {
+      localStorage.setItem(STATS_CACHE_KEY, JSON.stringify({
+        repo: RELEASES_REPO,
+        version: version,
+        current: stats.current,
+        total: stats.total,
+        at: Date.now()
+      }));
+    } catch (e) {}
+  }
+
+  function renderStats(stats) {
+    var current = document.getElementById('currentDownloads');
+    var total = document.getElementById('totalDownloads');
+    var box = document.getElementById('downloadStats');
+    var hero = document.getElementById('heroDownloads');
+
+    if (current) current.textContent = fmtCount(stats.current);
+    if (total) total.textContent = fmtCount(stats.total);
+    if (box) box.hidden = false;
+    if (hero) {
+      hero.innerHTML = '<strong>' + fmtCount(stats.current) + '</strong> descargas de esta versión' +
+        ' &nbsp;·&nbsp; <strong>' + fmtCount(stats.total) + '</strong> en total';
+      hero.hidden = false;
+    }
+  }
+
+  // Suma download_count de todos los APK publicados en GitHub Releases.
+  function fetchStats(version) {
+    var endpoint = 'https://api.github.com/repos/' + RELEASES_REPO + '/releases?per_page=100';
+    var all = [];
+
+    function load(url, depth) {
+      return fetch(url, {
+        cache: 'no-store',
+        headers: { 'Accept': 'application/vnd.github+json' }
+      }).then(function (res) {
+        if (!res.ok) throw new Error('GitHub API ' + res.status);
+        var link = res.headers.get('link') || '';
+        return res.json().then(function (data) {
+          return { data: data, link: link };
+        });
+      }).then(function (page) {
+        if (!Array.isArray(page.data)) return all;
+        all = all.concat(page.data);
+        var next = /<([^>]+)>;\s*rel="next"/.exec(page.link);
+        if (next && depth < 4) return load(next[1], depth + 1);
+        return all;
+      });
+    }
+
+    return load(endpoint, 0).then(function (releases) {
+      var current = 0;
+      var total = 0;
+      var apk = 'torque-' + version + '.apk';
+      var tag = 'v' + version;
+
+      releases.forEach(function (release) {
+        if (!release || !Array.isArray(release.assets)) return;
+        release.assets.forEach(function (asset) {
+          if (!asset || !/\.apk$/i.test(asset.name || '')) return;
+          var count = Number(asset.download_count) || 0;
+          total += count;
+          if (asset.name === apk || release.tag_name === tag) current += count;
+        });
+      });
+
+      return { current: current, total: total };
+    });
+  }
+
+  function loadStats(version) {
+    if (!version) return;
+    var cache = readStatsCache(version, false);
+    if (cache) { renderStats(cache); return; }
+
+    fetchStats(version).then(function (stats) {
+      writeStatsCache(version, stats);
+      renderStats(stats);
+    }).catch(function () {
+      // Si GitHub no responde o se agota el límite, mostramos lo último guardado.
+      var stale = readStatsCache(version, true);
+      if (stale) renderStats(stale);
+    });
+  }
+
   function setDownloads(url, version) {
     var links = document.querySelectorAll('[data-release-link]');
     var labels = document.querySelectorAll('[data-dl-label]');
@@ -360,6 +500,7 @@
     fine.innerHTML += '<a href="' + MANIFEST + '">version.json</a>';
 
     setDownloads(url, version);
+    loadStats(version);
   }
 
   fetch(MANIFEST + '?t=' + Date.now(), { cache: 'no-store' })

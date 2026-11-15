@@ -1,10 +1,10 @@
 {
   "platform": "android",
-  "version": "1.1.10",
-  "build": 10,
+  "version": "1.1.11",
+  "build": 11,
   "minBuild": 0,
   "mandatory": false,
-  "downloadUrl": "https://github.com/carloseradn-sketch/torque-releases/releases/download/v1.1.10/torque-1.1.10.apk",
+  "downloadUrl": "https://github.com/carloseradn-sketch/torque-releases/releases/download/v1.1.11/torque-1.1.11.apk",
   "publishedAt": "2026-11-15",
-  "changelog": "• Botones, switches, tarjetas, selectores y barras usan el vidrio líquido del paquete.\n• Hojas modales estándar de iOS, sin los bugs de los sheets de vidrio.\n• Alerts con transición de materialización: el fondo ya no aparece de golpe.\n• Platter de los alerts más opaco, con blanco al 18% en modo oscuro.\n• Nuevo interruptor «Vidrio premium» en Ajustes, estándar por defecto y sin cambios de calidad en runtime.\n• Alerta térmica, viajes y pantallas de conexión adaptadas al nuevo sistema visual.\n"
+  "changelog": "• La web muestra las descargas de la versión actual y el total histórico.\n• Los contadores se leen de GitHub Releases con caché de 10 minutos.\n• Cada release sincroniza index.html y .nojekyll al repo público.\n"
 }
