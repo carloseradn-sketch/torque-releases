@@ -1,10 +1,10 @@
 {
   "platform": "android",
-  "version": "1.1.9",
-  "build": 9,
+  "version": "1.1.10",
+  "build": 10,
   "minBuild": 0,
   "mandatory": false,
-  "downloadUrl": "https://github.com/carloseradn-sketch/torque-releases/releases/download/v1.1.9/torque-1.1.9.apk",
-  "publishedAt": "2026-11-14",
-  "changelog": "• Ajustes: se eliminan los selectores manuales de familia BMS y de version JK. La familia se detecta al escanear y la version JK se elige sola al conectar.\n• JK02 24S/32S se detecta desde la version de firmware/hardware del propio pack y se recuerda por bateria, evitando offsets incorrectos al cambiar entre packs JK.\n• Ya no hace falta cortar la conexion para corregir la familia o el protocolo desde Ajustes; el enlace se ajusta una sola vez si la variante detectada difiere.\n"
+  "downloadUrl": "https://github.com/carloseradn-sketch/torque-releases/releases/download/v1.1.10/torque-1.1.10.apk",
+  "publishedAt": "2026-11-15",
+  "changelog": "• Botones, switches, tarjetas, selectores y barras usan el vidrio líquido del paquete.\n• Hojas modales estándar de iOS, sin los bugs de los sheets de vidrio.\n• Alerts con transición de materialización: el fondo ya no aparece de golpe.\n• Platter de los alerts más opaco, con blanco al 18% en modo oscuro.\n• Nuevo interruptor «Vidrio premium» en Ajustes, estándar por defecto y sin cambios de calidad en runtime.\n• Alerta térmica, viajes y pantallas de conexión adaptadas al nuevo sistema visual.\n"
 }
